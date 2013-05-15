@@ -54,9 +54,11 @@ if(WIN32)
   endif(MSVC)
 elseif(CMAKE_COMPILER_IS_GNUCXX)
   #Linux
-  set(KoRE_LIBS glfw GL GLEW KoRE assimp tinyxml)
-  add_definitions(-DGLEW_STATIC)
-    add_definitions(-DGXX_EXPERIMENTAL_CXX0X)
+link_directories(${CMAKE_SOURCE_DIR}/bin)
+  #add_definitions(-DGLEW_STATIC)
+  set(KoRE_LIBS GL GLEW glfw KoRE assimp tinyxml)
+  
+    #add_definitions(-DGXX_EXPERIMENTAL_CXX0X)
     #add_definitions(-D__GXX_EXPERIMENTAL_CXX0X__)
     
     #set(CMAKE_CXX_FLAGS "-std=gnu++11")

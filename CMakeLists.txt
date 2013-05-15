@@ -4,6 +4,7 @@ project(KoRE)
 # For custom cmake modules.
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/lib)
+link_directories(${CMAKE_SOURCE_DIR}/bin)
 
 include(GetOpenGLHeaders)
 add_custom_target(clean-dependencies
@@ -26,6 +27,7 @@ endif()
 file(MAKE_DIRECTORY lib)
 
 check_gl_headers()
+add_definitions(-DGLFW_INCLUDE_GL3)
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
@@ -43,11 +45,8 @@ endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "-std=c++0x") 
-    #set(CMAKE_CXX_FLAGS "-std=gnu++11")
-    #SET(CMAKE_EXE_LINKER_FLAGS "-static-libgcc")
     SET(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
     add_definitions(-DGXX_EXPERIMENTAL_CXX0X)
-    #add_definitions(-D__GXX_EXPERIMENTAL_CXX0X__)
 endif()
 
 # Build KoRE library
@@ -60,6 +59,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 	#Link external libraries to KoRE
 	link_directories(${CMAKE_LIBRARY_PATH})
 	include_directories(${CMAKE_LIBRARY_PATH})
+
 	
 	if(WIN32)
 		add_library( tinyxml STATIC IMPORTED)        
@@ -83,8 +83,9 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 		target_link_libraries(KoRE opengl32)
 	else()
 		#Linux
+
 		add_definitions(-DGLEW_STATIC)
-		target_link_libraries(KoRE GLEW)	
+		target_link_libraries(KoRE GL GLEW glfw)	
 	endif(WIN32)
 	
 	target_link_libraries(KoRE tinyxml)		
@@ -133,10 +134,6 @@ endif()
 
 set(CMAKE_LIBRARY_PATH  ${CMAKE_SOURCE_DIR}/lib)
 
-#if(MSVC)
-#  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/ext/include)
-#  message("Hello MSVC")
-#endif()
 
 add_custom_target(style
   COMMAND ${PYTHON_VER} scripts/cpplint.py --filter=${IGNORE} ${SOURCES}
